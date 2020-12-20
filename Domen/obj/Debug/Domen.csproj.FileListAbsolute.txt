@@ -1,0 +1,6 @@
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Domen\bin\Debug\Domen.dll
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Domen\bin\Debug\Domen.pdb
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Domen\obj\Debug\Domen.csprojAssemblyReference.cache
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Domen\obj\Debug\Domen.csproj.CoreCompileInputs.cache
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Domen\obj\Debug\Domen.dll
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Domen\obj\Debug\Domen.pdb

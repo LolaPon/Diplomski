@@ -1,0 +1,9 @@
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Sesija\bin\Debug\Sesija.dll
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Sesija\bin\Debug\Sesija.pdb
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Sesija\bin\Debug\Domen.dll
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Sesija\bin\Debug\Domen.pdb
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Sesija\obj\Debug\Sesija.csprojAssemblyReference.cache
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Sesija\obj\Debug\Sesija.csproj.CoreCompileInputs.cache
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Sesija\obj\Debug\Sesija.csproj.CopyComplete
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Sesija\obj\Debug\Sesija.dll
+C:\Users\Selena Matijevic\source\repos\VeterinarskaOrdinacija\Sesija\obj\Debug\Sesija.pdb
