@@ -28,6 +28,7 @@ namespace Forme
         {
             lj = ljubimac;
             InitializeComponent();
+            this.Text = "Ljubimac " + ljubimac.Ime; 
             btnKreirajIDLj.Enabled = false;
             gbLjubimac.Enabled = true;
             gbVlasnik.Enabled = false;
@@ -50,7 +51,7 @@ namespace Forme
             {
                 try
                 {
-                    if (kontroler.IzmeniLjubimca(txtIDljub, txtImeLjubimca, cmbZivotinje, txtRasa, txtStarost, txtBoja, pol, txtImeVlasnika, txtPrezimeVlasnika, txtEmail, txtTelefon, txtJmbg, txtZanimanje,txtNapomena ,odgovor))
+                    if (kontroler.IzmeniLjubimca(txtIDljub, txtImeLjubimca, cmbZivotinje, txtRasa, txtStarost, txtBoja, pol,txtID ,txtJmbg,txtIme, txtPrezime, txtEmail, txtTelefon, txtZanimanje,txtNapomena ,odgovor))
                     {
                         MessageBox.Show("Uspešno ste izmenili ljubimca!");
                         this.Close();
@@ -65,7 +66,7 @@ namespace Forme
             else
             {
 
-                if (kontroler.sacuvajLjubimca(txtImeLjubimca, cmbZivotinje, txtRasa, txtStarost, txtBoja, pol, txtImeVlasnika, txtPrezimeVlasnika, txtEmail, txtTelefon, lj.Id , txtJmbg, txtZanimanje))
+                if (kontroler.sacuvajLjubimca(txtImeLjubimca, cmbZivotinje, txtRasa, txtStarost, txtBoja, pol, txtIme, txtPrezime, txtEmail, txtJmbg, lj.Id , txtID, txtZanimanje, txtTelefon))
                 {
                     this.Close();
                 }
@@ -85,7 +86,7 @@ namespace Forme
 
             if (btnSacuvajLj.Text == "Izmeni Ljubimca")
             {
-                kontroler.popuniFormu(txtImeLjubimca, cmbZivotinje, txtRasa, txtStarost, txtBoja, rbMuski , rbZenski, txtImeVlasnika, txtPrezimeVlasnika, txtEmail, txtTelefon, txtIDljub, btnSacuvajLj, lj, txtJmbg, txtZanimanje, txtNapomena);
+                kontroler.popuniFormu(txtImeLjubimca, cmbZivotinje, txtRasa, txtStarost, txtBoja, rbMuski , rbZenski, txtIDljub, btnSacuvajLj, lj, txtID, txtJmbg, txtIme, txtPrezime, txtEmail,txtTelefon,txtZanimanje,txtNapomena);
                 if (MessageBox.Show("Da li želite da izmenite i podatke o vlasniku?", "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     gbVlasnik.Enabled = true;
@@ -107,16 +108,16 @@ namespace Forme
             }
         }
 
-        private void txtTelefon_Leave(object sender, EventArgs e)
+        private void txtJmbg_Leave(object sender, EventArgs e)
         {
-            vlasnik.Telefon = txtTelefon.Text;
+            vlasnik.Jmbg = txtJmbg.Text;
             vlasnik = kontroler.proveriVlasnika(vlasnik);
             if (vlasnik != null)
             {
-                txtJmbg.Text = vlasnik.Id.ToString();
-                txtImeVlasnika.Text = vlasnik.Ime;
-                txtPrezimeVlasnika.Text = vlasnik.Prezime;
-                //txtTelefon.Text = vlasnik.Telefon;
+                txtID.Text = vlasnik.Id.ToString();
+                txtIme.Text = vlasnik.Ime;
+                txtPrezime.Text = vlasnik.Prezime;
+                txtTelefon.Text = vlasnik.Telefon;
                 txtEmail.Text = vlasnik.Email;
                 txtZanimanje.Text = vlasnik.Zanimanje;
                 txtNapomena.Text = vlasnik.Napomena;

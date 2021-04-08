@@ -68,7 +68,6 @@
     <Compile Include="SO\SOLjubimac\ZapamtiLjubimca.cs" />
     <Compile Include="SO\SOLjubimac\ZapamtiLjubimcaSaVlasnikom.cs" />
     <Compile Include="SO\SOOsoba\PronadjiOsobe.cs" />
-    <Compile Include="SO\SOOsoba\SacuvajOsobu.cs" />
     <Compile Include="SO\SOSala\VratiSveSale.cs" />
     <Compile Include="SO\SOTermin\IzmeniProtekliTermin.cs" />
     <Compile Include="SO\SOTermin\IzmeniTermin.cs" />

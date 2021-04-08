@@ -11,6 +11,7 @@ namespace Domen
     public class Osoba : OpstiDomenskiObjekat
     {
         int id;
+        string jmbg;
         string ime;
         string prezime;
         string telefon;
@@ -22,6 +23,7 @@ namespace Domen
         }
 
         public int Id { get => id; set => id = value; }
+        public string Jmbg { get; set; }
         public string Ime { get => ime; set => ime = value; }
         public string Prezime { get => prezime; set => prezime = value; }
         public string Telefon { get => telefon; set => telefon = value; }
@@ -58,7 +60,7 @@ namespace Domen
         {
             get
             {
-                return "values (" + id + ", '" + Ime + "', '" + Prezime + "', '" + Telefon + "', '" + Email + "')";
+                return "values (" + id + ", '" + Jmbg + "', '" + Ime + "', '" + Prezime + "', '" + Telefon + "', '" + Email + "')";
             }
         }
 
@@ -78,6 +80,7 @@ namespace Domen
         {
             Osoba o = new Osoba();
             o.Id = Convert.ToInt32(red["ID"]);
+            o.Jmbg = red["JMBG"].ToString();
             o.Ime = red["Ime"].ToString();
             o.Prezime = red["Prezime"].ToString();
             o.Telefon = red["Telefon"].ToString();

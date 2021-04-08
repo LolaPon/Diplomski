@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ServerForma));
             this.btnPokreni = new System.Windows.Forms.Button();
             this.btnZaustavi = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -64,9 +65,11 @@
             this.ClientSize = new System.Drawing.Size(497, 258);
             this.Controls.Add(this.btnZaustavi);
             this.Controls.Add(this.btnPokreni);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ServerForma";
             this.Text = "Server";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServerForma_FormClosing);
             this.Load += new System.EventHandler(this.ServerForma_Load);
             this.ResumeLayout(false);
 

@@ -13,7 +13,6 @@ namespace Server.SO.SOLjubimac
         {
             Ljubimac lj = new Ljubimac();
             lj = Sesija.Broker.vratiKonekciju().vratiJedanZaID(odo) as Ljubimac;
-            //lj.Veterinar = Sesija.Broker.vratiKonekciju().vratiJedanZaID(lj.Veterinar) as Veterinar;
             lj.Vlasnik = Sesija.Broker.vratiKonekciju().vratiJedanZaID(lj.Vlasnik) as Vlasnik;
             lj.Zivotinja = Sesija.Broker.vratiKonekciju().vratiJedanZaID(lj.Zivotinja) as Zivotinja;
 

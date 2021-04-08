@@ -31,9 +31,10 @@ namespace Forme
 
         private void FrmRaspored_Load(object sender, EventArgs e)
         {
-            kontroler.prikaziTermine(gridRaspored, lista);
+            kontroler.prikaziTermineZaVet(gridRaspored, lista);
             gridRaspored.Columns["DatumIVreme"].DefaultCellStyle.Format = "dd.MM.yyyy";
             gridRaspored.Columns["Opis"].Visible = false;
+            btnIzmeni.Enabled = true;
         }
 
         private void dateTimePicker_ValueChanged(object sender, EventArgs e)
@@ -85,7 +86,7 @@ namespace Forme
         private void btnPonisti_Click(object sender, EventArgs e)
         {
             dateTimePicker.Value = DateTime.Now;
-            kontroler.prikaziTermine(gridRaspored, null);
+            kontroler.prikaziTermineZaVet(gridRaspored, null);
         }
 
         private void gridRaspored_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -97,6 +98,16 @@ namespace Forme
                 btnIzmeni.Enabled = false;
             }
             else { btnIzmeni.Enabled = true; }
+        }
+
+        private void btnPrikaziSve_Click(object sender, EventArgs e)
+        {
+            kontroler.prikaziTermine(gridRaspored, null);
+        }
+
+        private void izveštajToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new FrmIzvestaj().Show();
         }
 
        

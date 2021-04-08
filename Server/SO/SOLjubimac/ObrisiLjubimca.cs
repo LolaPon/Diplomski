@@ -11,7 +11,7 @@ namespace Server.SO.SOLjubimac
     {
         public override object Izvrsi(OpstiDomenskiObjekat odo)
         {
-            if (Sesija.Broker.vratiKonekciju().deleteJedan(odo))
+            if (Sesija.Broker.vratiKonekciju().update2(odo) != 0)
             {
                 return true;
             }

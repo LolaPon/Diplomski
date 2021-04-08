@@ -20,6 +20,7 @@ namespace Server.SO.SOVlasnik
                 Osoba o = new Osoba();
                 o.Id = v.Id;
                 o = Sesija.Broker.vratiKonekciju().vratiJedanZaID(o) as Osoba;
+                v.Jmbg = o.Jmbg;
                 v.Ime = o.Ime;
                 v.Prezime = o.Prezime;
                 v.Email = o.Email;

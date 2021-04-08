@@ -15,6 +15,7 @@ namespace Server.SO.SOVlasnik
             Vlasnik v = odo as Vlasnik;
             Osoba o = new Osoba();
             o.Id = v.Id;
+            o.Jmbg = v.Jmbg;
             o.Ime = v.Ime;
             o.Prezime = v.Prezime;
             o.Telefon = v.Telefon;

@@ -31,11 +31,11 @@ namespace Forme
             if(kontroler.pronadjiVeterinara(txtUsername,txtPassword))
             {
                 new FrmPocetna(KontrolerKI.veterinar).ShowDialog();
-                this.Hide();
+                this.Close();
             }
 
         }
-
+        
         private void btnSee_Click(object sender, EventArgs e)
         {
             txtPassword.UseSystemPasswordChar = !txtPassword.UseSystemPasswordChar;
@@ -45,6 +45,11 @@ namespace Forme
         {
 
             //while(KontrolerKI.poveziSeNaServer().Contains("nije"))
+            this.Text = KontrolerKI.poveziSeNaServer();
+        }
+
+        private void FrmLogIN_DoubleClick(object sender, EventArgs e)
+        {
             this.Text = KontrolerKI.poveziSeNaServer();
         }
     }

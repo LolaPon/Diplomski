@@ -55,5 +55,11 @@ namespace Server
         {
             
         }
+
+
+        private void ServerForma_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

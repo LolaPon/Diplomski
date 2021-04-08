@@ -53,9 +53,11 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.gridLjubimci);
-            this.groupBox1.Location = new System.Drawing.Point(22, 203);
+            this.groupBox1.Location = new System.Drawing.Point(16, 165);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1168, 426);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Size = new System.Drawing.Size(876, 346);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -75,12 +77,13 @@
             this.zivotinjaDataGridViewTextBoxColumn,
             this.btnIzmeni,
             this.btnObrisi});
-            this.gridLjubimci.Location = new System.Drawing.Point(19, 21);
+            this.gridLjubimci.Location = new System.Drawing.Point(14, 17);
+            this.gridLjubimci.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.gridLjubimci.Name = "gridLjubimci";
             this.gridLjubimci.ReadOnly = true;
             this.gridLjubimci.RowHeadersWidth = 51;
             this.gridLjubimci.RowTemplate.Height = 24;
-            this.gridLjubimci.Size = new System.Drawing.Size(1143, 375);
+            this.gridLjubimci.Size = new System.Drawing.Size(857, 305);
             this.gridLjubimci.TabIndex = 0;
             this.gridLjubimci.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridLjubimci_CellContentClick);
             this.gridLjubimci.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridLjubimci_CellContentDoubleClick);
@@ -168,45 +171,50 @@
             // txtPretraga
             // 
             this.txtPretraga.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.txtPretraga.Location = new System.Drawing.Point(197, 96);
+            this.txtPretraga.Location = new System.Drawing.Point(148, 78);
+            this.txtPretraga.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtPretraga.Name = "txtPretraga";
-            this.txtPretraga.Size = new System.Drawing.Size(265, 28);
+            this.txtPretraga.Size = new System.Drawing.Size(200, 28);
             this.txtPretraga.TabIndex = 1;
             this.txtPretraga.TextChanged += new System.EventHandler(this.txtPretraga_TextChanged);
             // 
             // btnPretrazi
             // 
             this.btnPretrazi.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnPretrazi.Location = new System.Drawing.Point(490, 80);
+            this.btnPretrazi.Location = new System.Drawing.Point(368, 65);
+            this.btnPretrazi.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnPretrazi.Name = "btnPretrazi";
-            this.btnPretrazi.Size = new System.Drawing.Size(144, 61);
+            this.btnPretrazi.Size = new System.Drawing.Size(108, 50);
             this.btnPretrazi.TabIndex = 2;
-            this.btnPretrazi.Text = "Pretraži";
+            this.btnPretrazi.Text = "Neaktivni";
             this.btnPretrazi.UseVisualStyleBackColor = true;
             this.btnPretrazi.Click += new System.EventHandler(this.btnPretrazi_Click);
             // 
             // pictureBox2
             // 
             this.pictureBox2.Image = global::Forme.Properties.Resources.asia1;
-            this.pictureBox2.Location = new System.Drawing.Point(835, 34);
+            this.pictureBox2.Location = new System.Drawing.Point(626, 28);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(204, 184);
+            this.pictureBox2.Size = new System.Drawing.Size(153, 150);
             this.pictureBox2.TabIndex = 3;
             this.pictureBox2.TabStop = false;
             // 
             // FrmLjubimci
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1202, 684);
+            this.ClientSize = new System.Drawing.Size(902, 556);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.btnPretrazi);
             this.Controls.Add(this.txtPretraga);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "FrmLjubimci";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Spisak ljubimaca";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmLjubimci_FormClosing);
             this.Load += new System.EventHandler(this.FrmLjubimci_Load);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridLjubimci)).EndInit();

@@ -17,11 +17,8 @@ namespace Domen
                             IzmeniVlasnika = 8,
                             UcitajSveLjubimce = 9,
                             PronadjiLjubimca = 10,
-                            //DajLjubimca = 11,
                             IzmeniLjubimca = 12,
                             PronadjiVeterinara = 13,
-                            //DodajVeterinara = 13,
-                            //DodajTermin = 14,
                             VratiSveVeterinare = 15,
                             VratiSveTermine = 16,
                             VratiTermineZaUslov = 17,
@@ -32,16 +29,14 @@ namespace Domen
                             ObrisiVlasnika = 22,
                             ObrisiLjubimca = 23,
                             PronadjiTermine = 24,
-                            
-                            //DajTermin = 19,
                             ObrisiTermin = 30,
                             ZapamtiLjubimcaSaVlasnikom = 31,
                             SacuvajTermin = 32,
-                             VratiSveSale = 33,
-        VratiSveVlasnike = 35,
-        PronadjiOsobe = 36,
-        VratiOsobeVlasnik = 37,
-        IzmeniProtekliTermin = 38,
+                            VratiSveSale = 33,
+                            VratiSveVlasnike = 35,
+                            PronadjiOsobe = 36,
+                            VratiOsobeVlasnik = 37,
+                            IzmeniProtekliTermin = 38,
     }
     [Serializable]
     public class TransferKlasa

@@ -139,9 +139,6 @@ namespace Server
                             transfer.odgovor = pvet.IzvrsiSO(transfer.poruka as OpstiDomenskiObjekat);
                             formater.Serialize(tok, transfer);
                             break;
-                        //case Operacija.DodajTermin:
-                        //    operacija = 14;
-                        //    break;
                         case Operacija.VratiSveVeterinare:
                             vratiSveVeterinare vsvet = new vratiSveVeterinare();
                             transfer.odgovor = vsvet.IzvrsiSO(transfer.poruka as OpstiDomenskiObjekat);

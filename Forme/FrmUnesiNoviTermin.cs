@@ -41,6 +41,8 @@ namespace Forme
             gridLjubimci.Columns["Starost"].Visible = false;
             gridLjubimci.Columns["Pol"].Visible = false;
             gridLjubimci.Columns["Boja"].Visible = false;
+            gridLjubimci.Columns["Status"].Visible = false;
+            gridLjubimci.Columns["Zivotinja"].Width = 80;
 
         }
 
@@ -62,6 +64,7 @@ namespace Forme
 
             if (btnSacuvaj.Text == "Izmeni")
             {
+                groupBox1.Text = "Izmeni termin";
                 txtLjubimac.Text = t.Ljubimac.ToString();
                 cmbVeterinar.SelectedIndex = cmbVeterinar.FindStringExact(t.Veterinar.ToString());
                 string datumIVreme = t.DatumIvreme.ToString("dd.MM.yyyy. HH:mm");
@@ -84,6 +87,7 @@ namespace Forme
                 }
                 else {  }
             }
+            
         }
 
         private void gridLjubimci_CellContentClick(object sender, DataGridViewCellEventArgs e)

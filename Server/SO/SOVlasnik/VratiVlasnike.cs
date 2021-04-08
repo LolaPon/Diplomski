@@ -23,11 +23,12 @@ namespace Server.SO.SOVlasnik
                 
                 o.Id = v.Id;
                 o = Sesija.Broker.vratiKonekciju().vratiJedanZaID(o) as Osoba;
+                v.Jmbg = o.Jmbg;
                 v.Ime = o.Ime;
                 v.Prezime = o.Prezime;
                 v.Email = o.Email;
                 v.Telefon = o.Telefon;
-                ljubimac.USLOVI = "IDVlasnik = " + v.Id;
+                ljubimac.USLOVI = "IDVlasnik = " + v.Id + " and Status = 'Aktivan'";
                 v.Ljubimci = Sesija.Broker.vratiKonekciju().vratiSveZaUslovOpsti(ljubimac).OfType<Ljubimac>().ToList<Ljubimac>();
              }
             return lista;

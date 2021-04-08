@@ -1,14 +1,19 @@
 ﻿using Domen;
+using OfficeOpenXml;
 using Sesija;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+
 
 namespace Forme
 {
@@ -22,26 +27,139 @@ namespace Forme
         static Zivotinja zivotinja;
         static Vlasnik vlasnik;
 
-        //public KontrolerKI()
-        //{
-        //    ThreadStart ts = primiPoruku;
-        //    new Thread(ts).Start();
-        //}
 
-        //private void primiPoruku()
-        //{
-        //    while (true)
-        //    {
-        //        TransferKlasa transfer = komunikacija.primiPoruku();
-        //        Delegat d = new Delegat(zvrsiOperaciju);
-        //        invoke(d, transfer)
-        //    }
-        //}
+        internal void kreirajIzvestajZaVeterinara(ComboBox cmbMeseci)
+        {
+            if(cmbMeseci.SelectedItem == null)
+            {
+                MessageBox.Show("Izaberite mesec");
+                return;
+            }
+            termin = new Termin();
+            List<Termin> termini = new List<Termin>();
+            termin.USLOVI = " MONTH(DatumIVreme) = " +  Convert.ToInt32(cmbMeseci.SelectedIndex)  + "+1 and IDVeterinar = " + veterinar.Id;
+            termini = komunikacija.vratiTermineZaUslov(termin);
 
-        //private Delegat zvrsiOperaciju(TransferKlasa transfer)
-        //{
-        //    throw new NotImplementedException();
-        //}
+            if(termini.Count == 0)
+            { MessageBox.Show("Nema termina za izveštaj."); return; }
+            if (termini.Count == 0)
+            { MessageBox.Show("Došlo je do greške!"); }
+
+
+            string spreadsheetPath = @"C:\Users\Selena Matijevic\Desktop\Izvestaji\" + "izvestaj" + veterinar.Ime + cmbMeseci.SelectedItem +".xlsx";
+            File.Delete(spreadsheetPath);
+            FileInfo spsInfo = new FileInfo(spreadsheetPath);
+            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+            ExcelPackage pckIzvestaj = new ExcelPackage(spsInfo);
+
+            try
+            {
+                var terminWorkSheet = pckIzvestaj.Workbook.Worksheets.Add("Izveštaj" + DateTime.Now.ToString("dd/MM/yyyy"));
+
+                terminWorkSheet.Cells["A1:C1"].Merge = true;
+                terminWorkSheet.Cells["A1"].Value = "LABOVET";
+                terminWorkSheet.Cells["A1"].Style.Font.Bold = true;
+                terminWorkSheet.Cells["A2:C2"].Merge = true;
+                terminWorkSheet.Cells["A2"].Value = "Veterinarska ordinacija";
+                terminWorkSheet.Cells["A1:A2"].Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+                terminWorkSheet.Cells["G1:G2"].Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+                terminWorkSheet.Cells["A1:G1"].Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+                terminWorkSheet.Cells["A2:G2"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+                terminWorkSheet.Cells["E1:G1"].Merge = true;
+                terminWorkSheet.Cells["E1"].Value = "Zemun, KAradjordjev trg 9";
+                terminWorkSheet.Cells["E2:G2"].Merge = true;
+                terminWorkSheet.Cells["E2"].Value = "Kontakt tel: +381112107757";
+
+                terminWorkSheet.Row(1).Height = 35;
+                terminWorkSheet.Row(2).Height = 35;
+                terminWorkSheet.Cells["A1:A2"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                terminWorkSheet.Cells["A1"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                terminWorkSheet.Cells["A2"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Top;
+
+                terminWorkSheet.Cells["E1:E2"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                terminWorkSheet.Cells["E1"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Bottom;
+                terminWorkSheet.Cells["E2"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Top;
+
+                terminWorkSheet.Column(3).Width = 16;
+                terminWorkSheet.Column(4).Width = 13;
+                terminWorkSheet.Column(6).Width = 16;
+                terminWorkSheet.Column(7).Width = 13;
+
+                terminWorkSheet.Cells["A4"].Value = "Rbr";
+                terminWorkSheet.Cells["B4"].Value = "Ljubimac";
+                terminWorkSheet.Cells["C4"].Value = "Veterinar";
+                terminWorkSheet.Cells["D4"].Value = "Datum";
+                terminWorkSheet.Cells["E4"].Value = "Vreme";
+                //terminWorkSheet.Cells["F1"].Value = "Sala";
+                terminWorkSheet.Cells["F4"].Value = "Vrsta";
+                terminWorkSheet.Cells["G4"].Value = "Opis";
+                terminWorkSheet.Cells["A4:G4"].Style.Font.Bold = true;
+
+                //Popunjavanje
+
+                int currentRow = 5;
+
+                foreach (Termin t in termini)
+                {
+                    terminWorkSheet.Cells["A" + currentRow.ToString()].Value = currentRow - 4;
+                    terminWorkSheet.Cells["B" + currentRow.ToString()].Value = t.Ljubimac.Ime;
+                    terminWorkSheet.Cells["C" + currentRow.ToString()].Value = t.Veterinar.ToString();
+                    terminWorkSheet.Cells["D" + currentRow.ToString()].Value = t.DatumIvreme.ToString("dd.MM.yyyy.");
+                    terminWorkSheet.Cells["E" + currentRow.ToString()].Value = t.DatumIvreme.ToString("HH:mm");
+                    // terminWorkSheet.Cells["F" + currentRow.ToString()].Value = t.Sala.Tip;
+                    terminWorkSheet.Cells["F" + currentRow.ToString()].Value = t.VrstaTermina;
+                    terminWorkSheet.Cells["G" + currentRow.ToString()].Value = t.Opis;
+
+                    currentRow++;
+                }
+
+                terminWorkSheet.View.FreezePanes(currentRow, 1);
+
+
+                pckIzvestaj.Save();
+                MessageBox.Show("Uspešno ste kreirali izveštaj!");
+                //ProcessStartInfo startInfo = new ProcessStartInfo();
+                //startInfo.FileName = @"C:\\Users\\Selena Matijevic\\Desktop\\" + ljub.Ime + ".xlsx"; // Your absolute PATH 
+                //Process.Start(startInfo);
+                //System.Diagnostics.Process.Start(@"C:\\Users\\Selena Matijevic\\Desktop\\"+ljub.Ime+".xlsx");
+                //File.Open(@"C:\\Users\Selena Matijevic\\Desktop\\Izvestaji"+ljub.Ime+".xlsx", FileMode.Open);
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+
+        internal void prikaziNeaktivne(DataGridView gridLjubimci)
+        {
+            ljubimac = new Ljubimac();
+            List<Ljubimac> lista = new List<Ljubimac>();
+            ljubimac.USLOVI = "Status = 'Neaktivan'";
+            lista = komunikacija.ucitajSveLjubimce(ljubimac);
+
+            if (lista == null)
+            {
+                MessageBox.Show("Ne mozemo da ucitamo ljubimce!");
+            }
+            if (lista.Count == 0)
+            {
+                MessageBox.Show("Ne postoji lista ljubimaca");
+            }
+            gridLjubimci.DataSource = new BindingList<Ljubimac>(lista);
+            gridLjubimci.Columns[6].Width = 110;
+            gridLjubimci.Columns[3].Width = 60;
+            gridLjubimci.Columns[4].Width = 60;
+        }
+    
+
+        public void kraj()
+        {
+            komunikacija.kraj();
+        }
+
 
         public static string poveziSeNaServer()
         {
@@ -59,6 +177,131 @@ namespace Forme
 
         }
 
+        internal void KreirajIzvestaj(Ljubimac ljub)
+        {
+            termin = new Termin();
+            termin.USLOVI = " IDLjubimac = " + ljub.Id;
+            List<Termin> lista = komunikacija.vratiTermineZaUslov(termin);
+
+            string spreadsheetPath = @"C:\Users\Selena Matijevic\Desktop\Izvestaji\" + "izvestaj" + ljub.Ime + ".xlsx";
+            File.Delete(spreadsheetPath);
+            FileInfo spsInfo = new FileInfo(spreadsheetPath);
+            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+            ExcelPackage pckIzvestaj = new ExcelPackage(spsInfo);
+
+            try
+            {
+                var terminWorkSheet = pckIzvestaj.Workbook.Worksheets.Add("Izveštaj" + DateTime.Now.ToString("dd/MM/yyyy"));
+
+                terminWorkSheet.Cells["A1:C1"].Merge = true;
+                terminWorkSheet.Cells["A1"].Value = "LABOVET";
+                terminWorkSheet.Cells["A1"].Style.Font.Bold = true;
+                terminWorkSheet.Cells["A2:C2"].Merge = true;
+                terminWorkSheet.Cells["A2"].Value = "Veterinarska ordinacija";
+                terminWorkSheet.Cells["A1:A2"].Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+                terminWorkSheet.Cells["G1:G2"].Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+                terminWorkSheet.Cells["A1:G1"].Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+                terminWorkSheet.Cells["A2:G2"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thick;
+                terminWorkSheet.Cells["E1:G1"].Merge = true;
+                terminWorkSheet.Cells["E1"].Value = "Zemun, Karadjordjev trg 9";
+                terminWorkSheet.Cells["E2:G2"].Merge = true;
+                terminWorkSheet.Cells["E2"].Value = "Kontakt tel: +381112107757";
+        
+                terminWorkSheet.Row(1).Height = 35;
+                terminWorkSheet.Row(2).Height = 35;
+                terminWorkSheet.Cells["A1:A2"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                terminWorkSheet.Cells["A1"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                terminWorkSheet.Cells["A2"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Top;
+
+                terminWorkSheet.Cells["E1:E2"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                terminWorkSheet.Cells["E1"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Bottom;
+                terminWorkSheet.Cells["E2"].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Top;
+
+                terminWorkSheet.Column(3).Width = 16;
+                terminWorkSheet.Column(4).Width = 13;
+                terminWorkSheet.Column(6).Width = 16;
+                terminWorkSheet.Column(7).Width = 30;
+
+                terminWorkSheet.Cells["A4"].Value = "Rbr";
+                terminWorkSheet.Cells["B4"].Value = "Ljubimac";
+                terminWorkSheet.Cells["C4"].Value = "Veterinar";
+                terminWorkSheet.Cells["D4"].Value = "Datum";
+                terminWorkSheet.Cells["E4"].Value = "Vreme";
+                //terminWorkSheet.Cells["F1"].Value = "Sala";
+                terminWorkSheet.Cells["F4"].Value = "Vrsta";
+                terminWorkSheet.Cells["G4"].Value = "Opis";
+                terminWorkSheet.Cells["A4:G4"].Style.Font.Bold = true;
+
+                //Popunjavanje
+
+                int currentRow = 5;
+
+                foreach (Termin t in lista)
+                {
+                    terminWorkSheet.Cells["A" + currentRow.ToString()].Value = currentRow - 4;
+                    terminWorkSheet.Cells["B" + currentRow.ToString()].Value = t.Ljubimac.Ime;
+                    terminWorkSheet.Cells["C" + currentRow.ToString()].Value = t.Veterinar.ToString();
+                    terminWorkSheet.Cells["D" + currentRow.ToString()].Value = t.DatumIvreme.ToString("dd.MM.yyyy.");
+                    terminWorkSheet.Cells["E" + currentRow.ToString()].Value = t.DatumIvreme.ToString("HH:mm");
+                    // terminWorkSheet.Cells["F" + currentRow.ToString()].Value = t.Sala.Tip;
+                    terminWorkSheet.Cells["F" + currentRow.ToString()].Value = t.VrstaTermina;
+                    terminWorkSheet.Cells["G" + currentRow.ToString()].Value = t.Opis;
+                    terminWorkSheet.Cells["G" + currentRow.ToString()].Style.WrapText = true;
+
+                    currentRow++;
+                }
+
+                terminWorkSheet.View.FreezePanes(currentRow, 1);
+
+
+                pckIzvestaj.Save();
+                MessageBox.Show("Uspešno ste kreirali izveštaj!");
+                //ProcessStartInfo startInfo = new ProcessStartInfo();
+                //startInfo.FileName = @"C:\\Users\\Selena Matijevic\\Desktop\\" + ljub.Ime + ".xlsx"; // Your absolute PATH 
+                //Process.Start(startInfo);
+                //System.Diagnostics.Process.Start(@"C:\\Users\\Selena Matijevic\\Desktop\\"+ljub.Ime+".xlsx");
+                //File.Open(@"C:\\Users\Selena Matijevic\\Desktop\\Izvestaji"+ljub.Ime+".xlsx", FileMode.Open);
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+
+            
+
+        }
+
+        internal void sacuvajVlasnika(Vlasnik vlasnik, ComboBox cmbVlasnici, TextBox txtIme,TextBox txtPrezime, TextBox txtTelefon, TextBox txtEmail, TextBox txtZanimanje, TextBox txtNapomenan)
+        {
+            List<Vlasnik> vlasnici = new List<Vlasnik>();
+            vlasnik.Ime = txtIme.Text;
+            vlasnik.Prezime = txtPrezime.Text;
+            vlasnik.Telefon = txtTelefon.Text;
+            vlasnik.Email = txtEmail.Text;
+            vlasnik.Zanimanje = txtZanimanje.Text;
+            vlasnik.Napomena = txtNapomenan.Text;
+
+            if(komunikacija.izmeniVlasnika(vlasnik)!= null)
+            {
+                MessageBox.Show("Uspešno ste izmenili vlasnika!");
+                vlasnici = komunikacija.vratiSveVlasnike(vlasnik);
+                if (vlasnici != null)
+                {
+                    cmbVlasnici.Items.Clear();
+                    cmbVlasnici.Text = vlasnik.ToString();
+                    foreach (Vlasnik v in vlasnici)
+                    {
+                        cmbVlasnici.Items.Add(v);
+                    }
+                }
+            }
+            else { MessageBox.Show("Došlo je do greške!"); }
+
+
+
+        }
 
         internal List<Vlasnik> vratiSveVlasnike()
         {
@@ -86,7 +329,7 @@ namespace Forme
         {
             List<Vlasnik> lista = new List<Vlasnik>();
             //Osoba o = new Osoba();
-            vlasnik.USLOVI = " Telefon = '" + vlasnik.Telefon + "'";
+            vlasnik.USLOVI = " JMBG = '" + vlasnik.Jmbg + "'";
             
             lista = komunikacija.VratiOsobeVlasnik(vlasnik);
 
@@ -209,15 +452,6 @@ namespace Forme
             return veterinar;
         }
 
-        internal void pretraziTermine(TextBox txtPretraga, DataGridView gridRaspored)
-        {
-
-            termin = new Termin();
-            termin.USLOVI = " lj.Ime like '" + txtPretraga.Text + "%' or v.Ime like '" + txtPretraga + "%' or v.Prezime like '" + txtPretraga.Text + "%' or z.Vrsta = '" + txtPretraga + "%'";
-            gridRaspored.DataSource = komunikacija.pronadjiTermine(termin);
-
-        }
-
         internal List<Sala> vratiSveSale()
         {
             Sala sala = new Sala();
@@ -332,7 +566,7 @@ namespace Forme
             {
                 termin.DatumIvreme = Convert.ToDateTime(datum + " " + vreme);
                 if(termin.DatumIvreme < DateTime.Now)
-                { MessageBox.Show("Nije moguće zameniti termin za izabrani datum. Izabran datum je prošao!");
+                { MessageBox.Show("Nije moguće zameniti termin za izabrani datum. \n Izabran datum je prošao!");
                     return false;
                 }
             }
@@ -371,6 +605,25 @@ namespace Forme
             else { MessageBox.Show("Izmena termina nije uspela!"); return false; }
         }
 
+        internal void prikaziTermineZaVet(DataGridView gridRaspored, List<Termin> lista)
+        {
+            if (lista == null || lista.Count == 0)
+            {
+                termin = new Termin();
+                termin.USLOVI = " DatumIvreme >= '" + DateTime.Now.ToString("yyyy-MM-dd hh:mm") + "'" ;
+                lista = komunikacija.vratiTermineZaUslov(termin);
+            }
+            if (lista == null)
+            {
+                MessageBox.Show("Ne mozemo da ucitamo termine!");
+            }
+            if (lista.Count == 0)
+            {
+                MessageBox.Show("Ne postoji lista termina");
+            }
+            gridRaspored.DataSource = new BindingList<Termin>(lista);
+        }
+
         internal void prikaziTermine(DataGridView gridRaspored, List<Termin> lista)
         {
             if (lista == null || lista.Count == 0)
@@ -389,24 +642,6 @@ namespace Forme
             gridRaspored.DataSource = new BindingList<Termin>(lista);
         }
         
-///Srediti
-        internal void vratiTermineZaUslov(DataGridView gridTermini)
-        {
-            List<Termin> lista = new List<Termin>();
-
-            termin = new Termin();
-                lista = komunikacija.vratiTermineZaUslov(termin);
-            
-            if (lista == null)
-            {
-                MessageBox.Show("Ne mozemo da ucitamo termine!");
-            }
-            if (lista.Count == 0)
-            {
-                MessageBox.Show("Ne postoji lista termina");
-            }
-            gridTermini.DataSource = new BindingList<Termin>(lista);
-        }
 
         internal void prikaziTermineZaDatum(DataGridView gridRaspored, DateTimePicker dateTimePicker)
         {
@@ -416,7 +651,7 @@ namespace Forme
 
             if (lista == null)
             {
-                MessageBox.Show("Ne mozemo da ucitamo termine!");
+                MessageBox.Show("Ne možemo da ucitamo termine!");
             }
             if (lista.Count == 0)
             {
@@ -432,13 +667,13 @@ namespace Forme
             return komunikacija.vratiSveVeterinare(vet);
         }
 
-        internal void popuniFormu(TextBox txtImeLjubimca, ComboBox cmbZivotinje, TextBox txtRasa, TextBox txtStarost, TextBox txtBoja, RadioButton rbMuski, RadioButton rbZenski, TextBox txtImeVlasnika, TextBox txtPrezimeVlasnika, TextBox txtEmail, TextBox txtTelefon, TextBox txtId, Button btn, Ljubimac lj, TextBox txtJmbg, TextBox txtZanimanje, TextBox txtNapomena)
+        internal void popuniFormu(TextBox txtImeLjubimca,ComboBox cmbZivotinje,TextBox txtRasa,TextBox txtStarost,TextBox txtBoja,RadioButton rbMuski ,RadioButton rbZenski,TextBox txtIDljub,Button btnSacuvajLj,Ljubimac lj,TextBox txtID,TextBox txtJmbg,TextBox txtIme,TextBox txtPrezime,TextBox txtEmail,TextBox txtTelefon,TextBox txtZanimanje ,TextBox txtNapomena)
         {
             vlasnik = new Vlasnik();
             vlasnik.Id = lj.Vlasnik.Id;
             vlasnik = komunikacija.pronadjiVlasnika(vlasnik)as Vlasnik;
 
-            txtId.Text = lj.Id.ToString();
+            txtIDljub.Text = lj.Id.ToString();
             txtImeLjubimca.Text = lj.Ime;
             cmbZivotinje.SelectedIndex = cmbZivotinje.FindStringExact(lj.Zivotinja.Vrsta); ////////////////////////////////////////////////
             txtRasa.Text = lj.Rasa;
@@ -448,17 +683,20 @@ namespace Forme
                 rbMuski.Checked = true;
             if (lj.Pol == "Z")
                 rbZenski.Checked = true;
-            txtImeVlasnika.Text = lj.Vlasnik.Ime;
-            txtPrezimeVlasnika.Text = lj.Vlasnik.Prezime;
-            txtEmail.Text = lj.Vlasnik.Email;
-            txtTelefon.Text = lj.Vlasnik.Telefon;
-            txtJmbg.Text = lj.Vlasnik.Id.ToString();
-            txtZanimanje.Text = vlasnik.Zanimanje.ToString();
-            txtNapomena.Text = vlasnik.Napomena.ToString();
+
+            txtID.Text = vlasnik.Id.ToString();
+            txtJmbg.Text = vlasnik.Jmbg.ToString();
+            txtIme.Text = vlasnik.Ime;
+            txtPrezime.Text = vlasnik.Prezime;
+            txtEmail.Text = vlasnik.Email;
+            txtTelefon.Text = vlasnik.Telefon;
+            txtZanimanje.Text = vlasnik.Zanimanje;
+            txtNapomena.Text = vlasnik.Napomena;
         }
 
-        internal bool IzmeniLjubimca(TextBox txtIDljub, TextBox txtImeLjubimca, ComboBox cmbZivotinje, TextBox txtRasa, TextBox txtStarost, TextBox txtBoja, string pol, TextBox txtImeVlasnika, TextBox txtPrezimeVlasnika, TextBox txtEmail, TextBox txtTelefon, TextBox txtJmbg, TextBox txtZanimanje, TextBox txtNapomena, bool odgovor)
+        internal bool IzmeniLjubimca(TextBox txtIDljub, TextBox txtImeLjubimca,ComboBox cmbZivotinje, TextBox txtRasa, TextBox txtStarost, TextBox txtBoja,string pol, TextBox txtId, TextBox txtJmbg, TextBox txtIme, TextBox txtPrezime, TextBox txtEmail, TextBox txtTelefon, TextBox txtZanimanje, TextBox txtNapomena,  bool odgovor)
         {
+            /////////////////////////txtIDljub, txtImeLjubimca, cmbZivotinje, txtRasa, txtStarost, txtBoja, pol,txtJmbg, txtJmbg,txtIme, txtPrezime, txtEmail, txtTelefon, txtZanimanje,txtNapomena ,odgovor
             Ljubimac lj = new Ljubimac();
 
             lj.Id = Convert.ToInt32(txtIDljub.Text);
@@ -471,7 +709,11 @@ namespace Forme
             }
             else
             {
-                lj.Ime = txtImeLjubimca.Text;
+                 lj.Ime = txtImeLjubimca.Text.Trim();
+                
+                //Encoding enc = Encoding.UTF8;
+                //byte[] utf8 = enc.GetBytes(txtImeLjubimca.Text.Trim()); ///////// PROBA
+                //lj.Ime = enc.GetString(utf8);
             }
 
             if (txtRasa.Text == "")
@@ -482,7 +724,7 @@ namespace Forme
             }
             else
             {
-                lj.Rasa = txtRasa.Text;
+                lj.Rasa = txtRasa.Text.Trim();
             }
 
             if (cmbZivotinje.SelectedItem == null)
@@ -528,7 +770,7 @@ namespace Forme
             }
             else
             {
-                lj.Boja = txtBoja.Text;
+                lj.Boja = txtBoja.Text.Trim();
             }
             if (pol == "")
             {
@@ -537,32 +779,34 @@ namespace Forme
             }
             else
             {
-                lj.Pol = pol;
+                lj.Pol = pol.Trim();
             }
 
            
-            lj.Vlasnik = new Vlasnik(); ;
+            lj.Vlasnik = new Vlasnik();
 
-            if (txtImeVlasnika.Text == "")
+            lj.Vlasnik.Id = Convert.ToInt32(txtId.Text.Trim()); 
+
+            if (txtIme.Text == "")
             {
                 MessageBox.Show("Unesite ime vlasnika!");
-                txtImeVlasnika.Focus();
+                txtIme.Focus();
                 return false;
             }
             else
             {
-                lj.Vlasnik.Ime = txtImeVlasnika.Text;
+                lj.Vlasnik.Ime = txtIme.Text.Trim();
             }
 
-            if (txtPrezimeVlasnika.Text == "")
+            if (txtPrezime.Text == "")
             {
                 MessageBox.Show("Unesite prezime vlasnika!");
-                txtPrezimeVlasnika.Focus();
+                txtPrezime.Focus();
                 return false;
             }
             else
             {
-                lj.Vlasnik.Prezime = txtPrezimeVlasnika.Text;
+                lj.Vlasnik.Prezime = txtPrezime.Text.Trim();
             }
 
             if (txtTelefon.Text == "")
@@ -573,7 +817,7 @@ namespace Forme
             }
             else
             {
-                lj.Vlasnik.Telefon = txtTelefon.Text;
+                lj.Vlasnik.Telefon = txtTelefon.Text.Trim();
             }
 
             if (txtEmail.Text == "")
@@ -584,7 +828,7 @@ namespace Forme
             }
             else
             {
-                lj.Vlasnik.Email = txtEmail.Text;
+                lj.Vlasnik.Email = txtEmail.Text.Trim();
             }
 
             if (txtZanimanje.Text == "")
@@ -595,10 +839,11 @@ namespace Forme
             }
             else
             {
-                lj.Vlasnik.Zanimanje = txtZanimanje.Text;
+                lj.Vlasnik.Zanimanje = txtZanimanje.Text.Trim();
             }
 
-            lj.Vlasnik.Napomena = txtNapomena.Text;
+            lj.Vlasnik.Napomena = txtNapomena.Text.Trim();
+
             if (txtJmbg.Text == "")
             {
                 MessageBox.Show("Unesite JMBG vlasnika!");
@@ -607,21 +852,19 @@ namespace Forme
             }
             else
             {
-                try
-                {
-                    lj.Vlasnik.Id = Convert.ToInt32(txtJmbg.Text.Trim());
-                    if (lj.Starost <= 0)
+                
+                
+                    lj.Vlasnik.Jmbg = txtJmbg.Text.Trim();
+                    if (lj.Vlasnik.Jmbg == "")
                     {
                         MessageBox.Show("Niste uneli JMBG u odgovarajucem formatu.");
                         return false;
                     }
-                }
-                catch (Exception)
-                {
-
-                    MessageBox.Show("Niste uneli JMBG u odgovarajucem formatu.");
-                }
+                
             }
+
+          
+
             object rezLJ;
             object rezV;
 
@@ -652,18 +895,10 @@ namespace Forme
         internal void pronadjiLjubimce(TextBox txtPretraga, DataGridView gridLjubimci)
         {
             ljubimac = new Ljubimac();
-            ljubimac.USLOVI = " Ime like '" + txtPretraga.Text + "%' or Rasa like '" + txtPretraga + "%'";
+            ljubimac.USLOVI = " (Ime like '" + txtPretraga.Text + "%' or Rasa like '" + txtPretraga + "%') and Status = 'Aktivan'";
             List<Ljubimac> lista = komunikacija.pronadjiLjubimca(ljubimac);
             gridLjubimci.DataSource = lista;
         }
-
-        //internal void pronadjiLjubimce(Vlasnik vlasnik, DataGridView gridLjubimci)
-        //{
-        //    ljubimac = new Ljubimac();
-        //    ljubimac.USLOVI = " IDVlasnik like '" + txtPretraga.Text + "%' or Rasa like '" + txtPretraga + "%'";
-        //    List<Ljubimac> lista = komunikacija.pronadjiLjubimca(ljubimac);
-        //    gridLjubimci.DataSource = lista;
-        //}
 
         internal void prikaziLjubimce(DataGridView gridLjubimci, Vlasnik vlasnik)
         {
@@ -672,11 +907,12 @@ namespace Forme
 
             if (vlasnik != null)
             {
-                ljubimac.USLOVI = " IDVlasnik = " + vlasnik.Id;
+                ljubimac.USLOVI = " IDVlasnik = " + vlasnik.Id + "and Status = 'Aktivan'";
                 lista = komunikacija.pronadjiLjubimca(ljubimac);
                 return;
             }
 
+            ljubimac.USLOVI = "Status = 'Aktivan'";
             lista = komunikacija.ucitajSveLjubimce(ljubimac);
 
             if (lista == null)
@@ -693,8 +929,8 @@ namespace Forme
             gridLjubimci.Columns[4].Width = 60;
         }
 
-        internal bool sacuvajLjubimca(TextBox txtImeLjubimca, ComboBox cmbZivotinje, TextBox txtRasa, TextBox txtStarost, TextBox txtBoja, string pol, TextBox txtImeVlasnika, TextBox txtPrezimeVlasnika, TextBox txtEmail, TextBox txtTelefon, int id, TextBox txtJmbg, TextBox txtZanimanje)
-        {
+        internal bool sacuvajLjubimca(TextBox txtImeLjubimca, ComboBox cmbZivotinje, TextBox txtRasa, TextBox txtStarost, TextBox txtBoja, string pol, TextBox txtImeVlasnika, TextBox txtPrezimeVlasnika, TextBox txtEmail, TextBox txtJmbg, int id, TextBox txtId, TextBox txtZanimanje, TextBox txtTelefon)
+        {//////////////////////////////txtImeLjubimca, cmbZivotinje, txtRasa,                                                                                          txtStarost, txtBoja, pol, txtIme, txtPrezime, txtEmail, txtJmbg, lj.Id , txtID, txtZanimanje
 
             ljubimac = new Ljubimac();
 
@@ -707,7 +943,10 @@ namespace Forme
                 return false;
             } else
             {
-                ljubimac.Ime = txtImeLjubimca.Text;
+                ljubimac.Ime = txtImeLjubimca.Text.Trim();
+                //Encoding enc = Encoding.UTF8;
+                //byte[] utf8 = enc.GetBytes(ljubimac.Ime); ///////// PROBA
+                //ljubimac.Ime = enc.GetString(utf8);
             }
 
             if (txtRasa.Text == "")
@@ -718,7 +957,7 @@ namespace Forme
             }
             else
             {
-                ljubimac.Rasa = txtRasa.Text;
+                ljubimac.Rasa = txtRasa.Text.Trim();
             }
 
             if (cmbZivotinje.SelectedItem == null)
@@ -765,7 +1004,7 @@ namespace Forme
             }
             else
             {
-                ljubimac.Boja = txtBoja.Text;
+                ljubimac.Boja = txtBoja.Text.Trim();
             }
             if (pol == "")
             {
@@ -777,6 +1016,7 @@ namespace Forme
                 ljubimac.Pol = pol;
             }
 
+            ljubimac.Status = "Aktivan";
 
             ljubimac.Vlasnik = new Vlasnik();
 
@@ -789,7 +1029,7 @@ namespace Forme
             }
             else
             {
-                ljubimac.Vlasnik.Ime = txtImeVlasnika.Text;
+                ljubimac.Vlasnik.Ime = txtImeVlasnika.Text.Trim();
             }
 
             if (txtPrezimeVlasnika.Text == "")
@@ -800,7 +1040,7 @@ namespace Forme
             }
             else
             {
-                ljubimac.Vlasnik.Prezime = txtPrezimeVlasnika.Text;
+                ljubimac.Vlasnik.Prezime = txtPrezimeVlasnika.Text.Trim();
             }
 
             if (txtTelefon.Text == "")
@@ -811,7 +1051,7 @@ namespace Forme
             }
             else
             {
-                ljubimac.Vlasnik.Telefon = txtTelefon.Text;
+                ljubimac.Vlasnik.Telefon = txtTelefon.Text.Trim();
             }
 
             if (txtEmail.Text == "")
@@ -822,7 +1062,7 @@ namespace Forme
             }
             else
             {
-                ljubimac.Vlasnik.Email = txtEmail.Text;
+                ljubimac.Vlasnik.Email = txtEmail.Text.Trim();
             }
 
             if (txtZanimanje.Text == "")
@@ -833,24 +1073,19 @@ namespace Forme
             }
             else
             {
-                ljubimac.Vlasnik.Zanimanje = txtZanimanje.Text;
+                ljubimac.Vlasnik.Zanimanje = txtZanimanje.Text.Trim();
             }
 
-            try
-            {
-                ljubimac.Vlasnik.Id = Convert.ToInt32(txtJmbg.Text);
-                if (ljubimac.Vlasnik.Id <= 0)
+            
+                ljubimac.Vlasnik.Jmbg = txtJmbg.Text;
+                if (ljubimac.Vlasnik.Jmbg == "")
                 {
                     MessageBox.Show("Niste uneli JMBG u odgovarajucem formatu.");
                     return false;
                 }
-            }
-            catch (Exception ex)
-            {
+            
 
-                MessageBox.Show(ex.Message + "Niste uneli jmbg u odgovarajućem formatu!");
-                return false;
-            }
+            ljubimac.Vlasnik.Id = Convert.ToInt32(txtId.Text);
 
             ljubimac.Vlasnik.Zanimanje = txtZanimanje.Text;
             object rez;
@@ -893,7 +1128,9 @@ namespace Forme
         {
             ljubimac = new Ljubimac();
             ljubimac.Ime = currentRow.Cells[2].Value.ToString();
-           // MessageBox.Show(ljubimac.Ime);
+            
+            
+
             ljubimac.Starost = Convert.ToInt32(currentRow.Cells[3].Value.ToString());
             ljubimac.Pol = currentRow.Cells[4].Value.ToString();
             ljubimac.Boja = currentRow.Cells[5].Value.ToString();
@@ -903,17 +1140,13 @@ namespace Forme
             ljubimac.Zivotinja = new Zivotinja();
             ljubimac.Zivotinja.Vrsta = currentRow.Cells[8].Value.ToString();
 
-            //ljubimac.Veterinar = new Veterinar();
-            //ljubimac.Veterinar.Ime = currentRow.Cells[7].Value.ToString().Split(' ')[0];
-            //ljubimac.Veterinar.Prezime = currentRow.Cells[7].Value.ToString().Split(' ')[1];
-
             ljubimac.Vlasnik = new Vlasnik();
             ljubimac.Vlasnik.Ime = currentRow.Cells[6].Value.ToString().Split(' ')[0];
             ljubimac.Vlasnik.Prezime = currentRow.Cells[6].Value.ToString().Split(' ')[1];
 
             
 
-            ljubimac.USLOVI = "lj.Ime = '" + ljubimac.Ime + "' and o.Ime = '" + ljubimac.Vlasnik.Ime + "' and o.Prezime = '" + ljubimac.Vlasnik.Prezime + /*"' and oo.Ime = '" +ljubimac.Veterinar.Ime + "' and oo.Prezime = '" + ljubimac.Veterinar.Prezime + */"'";
+            ljubimac.USLOVI = "lj.Ime = '" + ljubimac.Ime + "' and o.Ime = '" + ljubimac.Vlasnik.Ime + "' and o.Prezime = '" + ljubimac.Vlasnik.Prezime + "'";
 
             if (komunikacija.pronadjiLjubimcaIzTabele(ljubimac) == null)
             {
@@ -936,7 +1169,6 @@ namespace Forme
             List<Ljubimac> ljubimci = new List<Ljubimac>();
 
             ljubimac.Ime = currentRow.Cells[2].Value.ToString();
-            // MessageBox.Show(ljubimac.Ime);
             ljubimac.Starost = Convert.ToInt32(currentRow.Cells[3].Value.ToString());
             ljubimac.Pol = currentRow.Cells[4].Value.ToString();
             ljubimac.Boja = currentRow.Cells[5].Value.ToString();
@@ -946,21 +1178,17 @@ namespace Forme
             ljubimac.Zivotinja = new Zivotinja();
             ljubimac.Zivotinja.Vrsta = currentRow.Cells[8].Value.ToString();
 
-            //ljubimac.Veterinar = new Veterinar();
-            //ljubimac.Veterinar.Ime = currentRow.Cells[7].Value.ToString().Split(' ')[0];
-            //ljubimac.Veterinar.Prezime = currentRow.Cells[7].Value.ToString().Split(' ')[1];
-
             ljubimac.Vlasnik = new Vlasnik();
             ljubimac.Vlasnik.Ime = currentRow.Cells[6].Value.ToString().Split(' ')[0];
             ljubimac.Vlasnik.Prezime = currentRow.Cells[6].Value.ToString().Split(' ')[1];
 
-            ljubimac.USLOVI = " lj.Ime = '" + ljubimac.Ime + "' and lj.Rasa = '" + ljubimac.Rasa + "' and o.Ime = '" + ljubimac.Vlasnik.Ime + "' and o.Prezime = '" + ljubimac.Vlasnik.Prezime + /*"' and oo.Ime = '" + ljubimac.Veterinar.Ime + "' and oo.Prezime = '" + ljubimac.Veterinar.Prezime + */"'";
+            ljubimac.USLOVI = " lj.Ime = '" + ljubimac.Ime + "' and lj.Rasa = '" + ljubimac.Rasa + "' and o.Ime = '" + ljubimac.Vlasnik.Ime + "' and o.Prezime = '" + ljubimac.Vlasnik.Prezime + "'";
             ljubimac = komunikacija.pronadjiLjubimcaIzTabele(ljubimac);
 
-            termin.USLOVI = " IDLjubimac = " + ljubimac.Id;
+            termin.USLOVI = " DatumIVreme >= '" + DateTime.Now.ToString("yyyy-MM-dd 00:00") + "' and IDLjubimac = " + ljubimac.Id;
             if (komunikacija.vratiTermineZaUslov(termin) != null && komunikacija.vratiTermineZaUslov(termin).Count>0)
             {
-                MessageBox.Show("Nije moguće izbrisati ljubimca! Postoje termini za izabranog ljubimca!");
+                MessageBox.Show("Nije moguće obrisati podatke o ljubimcu! Postoje termini za izabranog ljubimca!");
                 new FrmRaspored(komunikacija.vratiTermineZaUslov(termin)).ShowDialog();
                 return false;
             }
@@ -974,7 +1202,7 @@ namespace Forme
                     try
                     {
                         komunikacija.obrisiLjubimca(ljubimac);
-                        MessageBox.Show("Uspešno ste obrisali ljubimca!");
+                        MessageBox.Show("Uspešno ste obrisali podatke o ljubimcu!");
                         return true;
                     }
                     catch (Exception ex)
@@ -990,13 +1218,13 @@ namespace Forme
                     try
                     {
                         komunikacija.obrisiLjubimca(ljubimac);
-                        komunikacija.obrisiVlasnika(vlasnik);
-                        MessageBox.Show("Uspešno ste obrisali ljubimca!");
+                        //komunikacija.obrisiVlasnika(vlasnik);
+                        MessageBox.Show("Uspešno ste obrisali podatke o ljubimcu!");
                         return true;
                     }
                     catch (Exception)
                     {
-                        MessageBox.Show("Brisanje je bilo neuspešno.");
+                        MessageBox.Show("Došlo je do greške.");
                         return false;
                     }
                 }
@@ -1009,8 +1237,6 @@ namespace Forme
             
             
         }
-
-        
 
         internal bool pronadjiVeterinara(TextBox txtUsername, TextBox txtPassword)
         {
@@ -1028,7 +1254,7 @@ namespace Forme
             }
             else
             {
-                MessageBox.Show("Uspesno ste se prijavili na sistem!");
+                MessageBox.Show("Uspešno ste se prijavili na sistem!");
                 return true;
             }
         }
@@ -1054,7 +1280,7 @@ namespace Forme
         internal void vratiDanasnjeTermine(DataGridView gridTermini)
         {
             termin = new Termin();
-            termin.USLOVI = " DatumIVreme >= '" + DateTime.Now.ToString("yyyy-MM-dd 00:00") + "' and DatumIVreme <= '" + DateTime.Now.ToString("yyyy-MM-dd 23:59") + "'";
+            termin.USLOVI = " DatumIVreme >= '" + DateTime.Now.ToString("yyyy-MM-dd 00:00") + "' and DatumIVreme <= '" + DateTime.Now.ToString("yyyy-MM-dd 23:59") + "' and IDVeterinar = " + veterinar.Id;
             List<Termin> lista = komunikacija.vratiTermineZaUslov(termin);
 
             BindingList<Termin> termini = new BindingList<Termin>(lista);
@@ -1064,6 +1290,29 @@ namespace Forme
 
         }
 
+        internal void promeniStatusLjubimca(DataGridViewRow currentRow, Vlasnik v)
+        {
+            ljubimac = new Ljubimac();
+            vlasnik = new Vlasnik();
+
+            ljubimac.Ime = currentRow.Cells[0].Value.ToString();
+            ljubimac.Status = currentRow.Cells[6].Value.ToString().Trim();
+            vlasnik = v;
+            ljubimac.USLOVI = " Ime = '" + ljubimac.Ime + "' and IDVlasnik = " + vlasnik.Id + " and Status = '" + ljubimac.Status + "'";
+            List<Ljubimac> lista = komunikacija.pronadjiLjubimca(ljubimac);
+            ljubimac = lista[0];
+            if (ljubimac.Status == "Aktivan")
+            {
+                if (komunikacija.obrisiLjubimca(ljubimac) != null)
+                { MessageBox.Show("Uspešno ste obrisali podatke o ljubimcu!"); }
+            }
+            else
+            {
+                if (komunikacija.izmeniLjubimca(ljubimac) != null)
+                { MessageBox.Show("Uspešno ste aktivirali ljubimca!"); }
+            }
+
+        }
 
     }
     }

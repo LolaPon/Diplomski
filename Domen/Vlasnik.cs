@@ -101,6 +101,7 @@ namespace Domen
             v.zanimanje = red["Zanimanje"].ToString();
             v.napomena = red["Napomena"].ToString();
 
+
             return v;
         }
         #endregion

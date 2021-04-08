@@ -26,7 +26,7 @@ namespace Forme
         public FrmPocetna(Veterinar vet)
         {
             InitializeComponent();
-            veterinar = vet;
+           // veterinar = vet;
             lblVet.Text += vet.Ime + " " + vet.Prezime;
         }
 
@@ -51,7 +51,7 @@ namespace Forme
         private void FrmPocetna_Load(object sender, EventArgs e)
         {
             kontroler.vratiDanasnjeTermine(gridTermini);
-            
+         
 
         }
 
@@ -76,6 +76,13 @@ namespace Forme
             termin = gridTermini.CurrentRow.DataBoundItem as Termin;
             new FrmUnesiNoviTermin(termin).Show();
 
+        }
+
+        private void FrmPocetna_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            kontroler.kraj();
+            this.Close();
+           // new FrmLogIN().Show();
         }
     }
 }

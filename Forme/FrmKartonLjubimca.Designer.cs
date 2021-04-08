@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmKartonLjubimca));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnKreirajIzvestaj = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.txtVlasnik = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -41,6 +42,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtOpis = new System.Windows.Forms.TextBox();
             this.gridTermini = new System.Windows.Forms.DataGridView();
+            this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
+            this.btnStampaj = new System.Windows.Forms.Button();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridTermini)).BeginInit();
@@ -48,6 +52,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnStampaj);
+            this.groupBox1.Controls.Add(this.btnKreirajIzvestaj);
             this.groupBox1.Controls.Add(this.pictureBox1);
             this.groupBox1.Controls.Add(this.txtVlasnik);
             this.groupBox1.Controls.Add(this.label4);
@@ -61,14 +67,25 @@
             this.groupBox1.Controls.Add(this.gridTermini);
             this.groupBox1.Location = new System.Drawing.Point(23, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(713, 486);
+            this.groupBox1.Size = new System.Drawing.Size(835, 486);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
+            // 
+            // btnKreirajIzvestaj
+            // 
+            this.btnKreirajIzvestaj.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnKreirajIzvestaj.Location = new System.Drawing.Point(369, 400);
+            this.btnKreirajIzvestaj.Name = "btnKreirajIzvestaj";
+            this.btnKreirajIzvestaj.Size = new System.Drawing.Size(189, 68);
+            this.btnKreirajIzvestaj.TabIndex = 1;
+            this.btnKreirajIzvestaj.Text = "Kreiraj izveštaj";
+            this.btnKreirajIzvestaj.UseVisualStyleBackColor = true;
+            this.btnKreirajIzvestaj.Click += new System.EventHandler(this.btnKreirajIzvestaj_Click);
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::Forme.Properties.Resources.Webp_net_resizeimage__2_;
-            this.pictureBox1.Location = new System.Drawing.Point(454, 285);
+            this.pictureBox1.Location = new System.Drawing.Point(619, 285);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(210, 183);
             this.pictureBox1.TabIndex = 1;
@@ -165,15 +182,41 @@
             this.gridTermini.ReadOnly = true;
             this.gridTermini.RowHeadersWidth = 51;
             this.gridTermini.RowTemplate.Height = 24;
-            this.gridTermini.Size = new System.Drawing.Size(686, 167);
+            this.gridTermini.Size = new System.Drawing.Size(813, 167);
             this.gridTermini.TabIndex = 0;
             this.gridTermini.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridTermini_CellClick);
+            // 
+            // printPreviewDialog1
+            // 
+            this.printPreviewDialog1.AutoScrollMargin = new System.Drawing.Size(0, 0);
+            this.printPreviewDialog1.AutoScrollMinSize = new System.Drawing.Size(0, 0);
+            this.printPreviewDialog1.ClientSize = new System.Drawing.Size(400, 300);
+            this.printPreviewDialog1.Document = this.printDocument1;
+            this.printPreviewDialog1.Enabled = true;
+            this.printPreviewDialog1.Icon = ((System.Drawing.Icon)(resources.GetObject("printPreviewDialog1.Icon")));
+            this.printPreviewDialog1.Name = "printPreviewDialog1";
+            this.printPreviewDialog1.Visible = false;
+            // 
+            // btnStampaj
+            // 
+            this.btnStampaj.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.btnStampaj.Location = new System.Drawing.Point(369, 302);
+            this.btnStampaj.Name = "btnStampaj";
+            this.btnStampaj.Size = new System.Drawing.Size(189, 69);
+            this.btnStampaj.TabIndex = 12;
+            this.btnStampaj.Text = "Štampaj";
+            this.btnStampaj.UseVisualStyleBackColor = true;
+            this.btnStampaj.Click += new System.EventHandler(this.btnStampaj_Click);
+            // 
+            // printDocument1
+            // 
+           // this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage_1);
             // 
             // FrmKartonLjubimca
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(758, 510);
+            this.ClientSize = new System.Drawing.Size(887, 510);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmKartonLjubimca";
@@ -202,5 +245,9 @@
         private System.Windows.Forms.TextBox txtIme;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button btnKreirajIzvestaj;
+        private System.Windows.Forms.Button btnStampaj;
+        private System.Windows.Forms.PrintPreviewDialog printPreviewDialog1;
+        private System.Drawing.Printing.PrintDocument printDocument1;
     }
 }

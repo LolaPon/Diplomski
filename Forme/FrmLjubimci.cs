@@ -10,36 +10,72 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Timer = System.Threading.Timer;
 
 namespace Forme
 {
     public partial class FrmLjubimci : Form
     {
        
-        BindingList<Ljubimac> listaLjubimaca;
-        KontrolerLjubimci kontroler = new KontrolerLjubimci();
-        //KontrolerKI kontroler = new KontrolerKI();
+        
+        
+        //KontrolerLjubimci kontroler = new KontrolerLjubimci();
+        KontrolerKI kontroler = new KontrolerKI();
+        public delegate void Delegat();
+        bool alive = false;
+        
         public FrmLjubimci()
         {
             InitializeComponent();
+           
 
         }
+        
 
         private void FrmLjubimci_Load(object sender, EventArgs e)
         {
-            kontroler.prikaziLjubimce(gridLjubimci, null);
-            //kontroler.osluskuj(gridLjubimci);
-            
+            //kontroler.prikaziLjubimce(gridLjubimci, null);
+            //gridLjubimci.Columns["Status"].Visible = false;
+            Thread t = new Thread(new ThreadStart(refresh));
+            alive = true;
+            t.Start();
+
         }
 
+        private void refresh()
+        {
+            while (alive)
+            {
+
+                try
+                {
+                    this.Invoke(new Delegat(prikaziLjubimce));
+                    Thread.Sleep(5000);
+                }
+                catch (Exception)
+                {
+
+
+                }
+            }
+        }
+
+        private void prikaziLjubimce()
+        {
+           
+            kontroler.prikaziLjubimce(gridLjubimci, null);
+            gridLjubimci.Columns["Status"].Visible = false;
+            Console.WriteLine("Refresh");
+            
+        }
 
         private void gridLjubimci_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (gridLjubimci.Columns[e.ColumnIndex].Name == "btnObrisi")
             {
-                if (MessageBox.Show("Da li ste sigurni da želite da obrišete ljubimca?", "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show("Da li ste sigurni da želite da obrišete podatke o ljubimcu?", "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    if (kontroler.obrisiLjubimca(gridLjubimci.CurrentRow))
+                    kontroler.obrisiLjubimca(gridLjubimci.CurrentRow);
                     {
                         kontroler.prikaziLjubimce(gridLjubimci, null);
                     }
@@ -51,7 +87,7 @@ namespace Forme
             {
                 kontroler.izmeniLjubimca(gridLjubimci.CurrentRow);
                 kontroler.prikaziLjubimce(gridLjubimci, null);
-                
+
 
             }
 
@@ -69,7 +105,13 @@ namespace Forme
 
         private void btnPretrazi_Click(object sender, EventArgs e)
         {
+            kontroler.prikaziNeaktivne(gridLjubimci);
+        }
 
+        private void FrmLjubimci_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            alive = false;
+           // t.Abort();
         }
     }
 }

@@ -81,14 +81,14 @@
             // prikaziToolStripMenuItem
             // 
             this.prikaziToolStripMenuItem.Name = "prikaziToolStripMenuItem";
-            this.prikaziToolStripMenuItem.Size = new System.Drawing.Size(174, 26);
-            this.prikaziToolStripMenuItem.Text = "Prikazi";
+            this.prikaziToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.prikaziToolStripMenuItem.Text = "Prikaži";
             this.prikaziToolStripMenuItem.Click += new System.EventHandler(this.prikaziToolStripMenuItem_Click);
             // 
             // unesiNovogToolStripMenuItem
             // 
             this.unesiNovogToolStripMenuItem.Name = "unesiNovogToolStripMenuItem";
-            this.unesiNovogToolStripMenuItem.Size = new System.Drawing.Size(174, 26);
+            this.unesiNovogToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.unesiNovogToolStripMenuItem.Text = "Unesi novog";
             this.unesiNovogToolStripMenuItem.Click += new System.EventHandler(this.unesiNovogToolStripMenuItem_Click);
             // 
@@ -164,6 +164,7 @@
             this.Name = "FrmPocetna";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Dobro došli!";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmPocetna_FormClosed);
             this.Load += new System.EventHandler(this.FrmPocetna_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace Domen
 {
+
+    
     [Serializable]
     public class Ljubimac : OpstiDomenskiObjekat 
     {
@@ -19,6 +21,7 @@ namespace Domen
         string rasa;
         Zivotinja zivotinja;
         Vlasnik vlasnik;
+        string status;
        
         [Browsable(false)]
         public int Id { get => id; set => id = value; }
@@ -29,6 +32,8 @@ namespace Domen
         public Vlasnik Vlasnik { get => vlasnik; set => vlasnik = value; }
         
         public string Rasa { get => rasa; set => rasa = value; }
+
+        public string Status { get => status; set => status = value; }
 
         [DisplayName("Životinja")]
         public Zivotinja Zivotinja { get => zivotinja; set => zivotinja = value; }
@@ -74,7 +79,7 @@ namespace Domen
         {
             get
             {
-                return "values (" + id + ",'" + ime + "'," + starost + ",'" + pol + "', '" + boja + "', '" + rasa + "', " + vlasnik.Id + ", " + zivotinja.Id + ")";
+                return "values (" + id + ",'" + ime + "'," + starost + ",'" + pol + "', '" + boja + "', '" + rasa + "', " + vlasnik.Id + ", " + zivotinja.Id + ", '" + status + "')";
             }
         }
         [Browsable(false)]
@@ -82,7 +87,7 @@ namespace Domen
         {
             get
             {
-                return "Ime = '" + ime + "', Starost = " + starost + ", Pol = '" + pol + "', Boja = '" + boja + "', Rasa = '" + rasa + "'";
+                return "Ime = '" + ime + "', Starost = " + starost + ", Pol = '" + pol + "', Boja = '" + boja + "', Rasa = '" + rasa + "'" + ", Status = 'Aktivan'";
             }
         }
         [Browsable(false)]
@@ -90,11 +95,11 @@ namespace Domen
         {
             get
             {
-                return "";
+                return "Status = 'Neaktivan'";
             }
         }
 
-       
+
 
         public OpstiDomenskiObjekat procitajRed(DataRow red)
         {
@@ -109,6 +114,7 @@ namespace Domen
             lj.vlasnik.Id = Convert.ToInt32(red["IDVlasnik"]);
             lj.zivotinja = new Zivotinja();
             lj.zivotinja.Id = Convert.ToInt32(red["IDZivotinja"]);
+            lj.status = red["Status"].ToString();
 
             return lj;
         }

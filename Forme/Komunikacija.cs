@@ -51,24 +51,16 @@ namespace Forme
                 return false;
             }
         }
-        public static Komunikacija Instanca
-        {
-            get
-            {
-                if (instanca == null)
-                {
-                    instanca = new Komunikacija();
-                }
-                return instanca;
-            }
-        }
-
-
-
-
-        //public TransferKlasa primiPoruku()
+        //public static Komunikacija Instanca
         //{
-            
+        //    get
+        //    {
+        //        if (instanca == null)
+        //        {
+        //            instanca = new Komunikacija();
+        //        }
+        //        return instanca;
+        //    }
         //}
 
         public object pronadjiVeterinara(Veterinar veterinar)
@@ -146,7 +138,7 @@ namespace Forme
             return transfer.odgovor as List<Sala>;
         }
 
-        public List<Domen.Termin> pronadjiTermine(Termin termin)
+        public List<Termin> pronadjiTermine(Termin termin)
         {
             TransferKlasa transfer = new TransferKlasa();
             transfer.operacija = Operacija.PronadjiTermine;
@@ -155,6 +147,12 @@ namespace Forme
             transfer = formater.Deserialize(tok) as TransferKlasa;
 
             return transfer.odgovor as List<Domen.Termin>;
+        }
+
+        internal void kraj()
+        {
+            TransferKlasa transfer = new TransferKlasa();
+            transfer.operacija = Operacija.Kraj;
         }
 
         public Termin kreirajTermin(Termin termin)
